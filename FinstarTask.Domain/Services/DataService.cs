@@ -4,6 +4,7 @@ using FinstarTask.DAL.Entities;
 using FinstarTask.DAL;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Data;
 
 namespace FinstarTask.Domain.Services;
 
@@ -26,6 +27,7 @@ public class DataService : IDataService
 
     public async Task<PagedResult<FinstarRow>> GetPage(int page, int pageSize)
     {
+        using var transaction = await _finstarRepo.BeginTransactionAsync(IsolationLevel.RepeatableRead);
         return await _finstarRepo.GetAll().GetPage(r => r.RowNum * -1, page, pageSize, r => new FinstarRow
         {
             Code = r.Code,
@@ -36,7 +38,7 @@ public class DataService : IDataService
 
     public async Task SetNewData(IEnumerable<NewFinstarRow> newItems)
     {
-        using IDbContextTransaction transaction = await _finstarRepo.BeginTransactionAsync();
+        using IDbContextTransaction transaction = await _finstarRepo.BeginTransactionAsync(IsolationLevel.Serializable);
         try
         {
             await _finstarRepo.TruncateAsync();

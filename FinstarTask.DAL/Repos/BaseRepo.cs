@@ -1,6 +1,7 @@
 ﻿using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Data;
 
 namespace FinstarTask.DAL.Repos;
 
@@ -67,20 +68,9 @@ public class BaseRepo<TEntity> where TEntity : class
         return _context.Set<TEntity>();
     }
 
-    public async Task<TEntity> UpdateAsync(TEntity entity)
+    public async Task<IDbContextTransaction> BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
     {
-        if (entity == null)
-        {
-            throw new ArgumentNullException($"{nameof(entity)} is null");
-        }
-        _context.Update(entity);
-        await _context.SaveChangesAsync();
-        return entity;
-    }
-
-    public async Task<IDbContextTransaction> BeginTransactionAsync()
-    {
-        IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync();
+        IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(isolationLevel);
         return transaction;
     }
 
