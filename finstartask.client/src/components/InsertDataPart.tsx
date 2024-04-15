@@ -42,12 +42,14 @@ export default function InsertDataPart({ pageSize, onDataInserted } : Props) {
   }
 
   const validateText = (text: string) => {
-    text = text.trim();
     if (!text) {
       return Promise.reject('Введите значение');
     }
-    if (text.length === MAX_TEXT_LENGTH && text[text.length - 1] !== ']') {
-      return Promise.reject(`Максимальная длина данных ${MAX_TEXT_LENGTH} символов. Похоже, массив был обрезан.`)
+    if (text.length === MAX_TEXT_LENGTH) {
+      text = text.trim();
+      if (text[text.length - 1] !== ']') {
+        return Promise.reject(`Максимальная длина данных ${MAX_TEXT_LENGTH} символов. Похоже, массив был обрезан.`)
+      }
     }
     if (!TryParseFinstarRows(text)){
       return Promise.reject("Данные имеют некорректный формат")
