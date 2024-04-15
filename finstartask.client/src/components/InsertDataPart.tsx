@@ -10,6 +10,8 @@ interface Props {
   pageSize: number;
   setPage: (page: PagedResult<FinstarRow>) => void;
 }
+
+const MAX_TEXT_LENGTH = 10000;
 interface FormData {
   text: string;
 }
@@ -36,7 +38,22 @@ export default function InsertDataPart({ pageSize, setPage} : Props) {
   const inserNewData = (count: number) => {
     const newData = RenderTestData(count);
     console.log(newData)
-    form.setFieldValue('text', JSON.stringify(newData, null, 2))
+    form.setFieldValue('text', JSON.stringify(newData, null, 2).substring(0, MAX_TEXT_LENGTH))
+  }
+
+  const validateText = (text: string) => {
+    text = text.trim();
+    if (!text) {
+      return Promise.reject('Введите значение');
+    }
+    if (text.length === MAX_TEXT_LENGTH && text[text.length - 1] !== ']') {
+      return Promise.reject(`Максимальная длина данных ${MAX_TEXT_LENGTH} символов. Похоже, массив был обрезан.`)
+    }
+    if (!TryParseFinstarRows(text)){
+      return Promise.reject("Данные имеют некорректный формат")
+    }
+
+    return Promise.resolve();
   }
 
   return(<>
@@ -46,8 +63,8 @@ export default function InsertDataPart({ pageSize, setPage} : Props) {
       disabled={isLoading}
       initialValues={{text: '[{"1": "value1"},{"5": "value2"},{"10": "value32"}]'}}
     >
-      <Form.Item label='Введите данные' name={'text'}>
-        <TextArea rows={20} />
+      <Form.Item label='Введите данные' name={'text'} rules={[{validator: (_, v) => validateText(v)}]}>
+        <TextArea rows={20} maxLength={MAX_TEXT_LENGTH} placeholder='[{"1": "value1"},{"5": "value2"},{"10": "value32"}]'/>
       </Form.Item>
       <Flex justify="flex-end">
         <Space>
