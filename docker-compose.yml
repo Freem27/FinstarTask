@@ -1,0 +1,46 @@
+version: '2.3'
+services:
+  mssql:
+    container_name: sql-server
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    restart: always
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Contraseña12345678"
+    ports:
+      - 1433:1433
+    volumes:
+      - C:\Work\DockerVolumes\mssql:/var/opt/mssql
+    # networks:
+    #   # default:
+    #   #   ipv4_address: 192.168.1.200
+    #   back:
+        # ipv4_address: 172.28.0.2
+      # default:
+      #   ipv4_address: 172.28.0.2
+# networks:
+#   # default:
+#   #   external:
+#   #     name: bridge
+#   back:
+#     driver: bridge
+#     enable_ipv6: false
+#     internal: true
+#     ipam:
+#       driver: default
+#       config:
+#         - subnet: 172.16.28.0/24
+  # static-network:
+  #   ipam:
+  #     config:
+  #       - subnet: 172.20.0.0/16
+  #         #docker-compose v3+ do not use ip_range
+  #         ip_range: 172.28.5.0/24
+  # default:
+  #   # Use a custom driver
+  #   driver: overlay
+  #   attachable: true
+  #   ipam:
+  #     driver: default
+  #     config:
+  #       - subnet: 172.28.0.0/16

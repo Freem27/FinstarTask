@@ -1,0 +1,15 @@
+@FinstarTask.Server_HostAddress = http://localhost:5286
+
+GET {{FinstarTask.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+###
+
+GET {{FinstarTask.Server_HostAddress}}/api/Data/get/
+Accept: application/json
+###
+POST {{FinstarTask.Server_HostAddress}}/api/Data/TruncateAndInsert/
+Accept: application/json
+Content-Type: application/json; charset=utf-8
+
+{"items":[{"code":1,"value":"value1"}],"pageSize": 10}
+###
