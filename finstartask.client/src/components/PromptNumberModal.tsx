@@ -1,4 +1,4 @@
-import { InputNumber, Modal } from "antd";
+import { Form, InputNumber, Modal } from "antd";
 import { useState } from "react";
 
 interface Props {
@@ -18,14 +18,17 @@ export default function PromptNumberModal ({ open, setOpen, onConfirm } : Props)
   return (
     <>
       <Modal
-        title="Modal"
+        title="Генерация данных для вставки"
         open={open}
         onOk={onOk}
         onCancel={() => setOpen(false)}
         okText="Ок"
+        width={330}
         cancelText="Отмена"
       >
-        <InputNumber min={1} max={1000} value={value} onChange={e => setValue(e ?? 1)} />
+        <Form.Item label='Введите количество' tooltip='Значение от 1 до 1000' >
+          <InputNumber min={1} max={1000} value={value} onChange={e => setValue(e ?? 1)} />
+        </Form.Item>
       </Modal>
     </>
   );
