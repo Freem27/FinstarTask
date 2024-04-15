@@ -5,6 +5,7 @@ import TextArea from "antd/es/input/TextArea";
 import { FinstarDataServie } from "../services/FinstarDataService";
 import { useState } from "react";
 import PromptNumberModal from "./PromptNumberModal";
+import { RandomIntFromInterval, RandomString } from "../utils/RandomUtils";
 
 const MAX_TEXT_LENGTH = 10000;
 
@@ -102,16 +103,8 @@ const TryParseFinstarRows = (source: string): NewFinstarRow[] | undefined => {
 const RenderTestData = (count: number): FinstarRowSource[] => {
   return new Array(count).fill(null).map(v => {
     const item: FinstarRowSource = {
-      [randomIntFromInterval(0, 1000) + v]: RandomString()
+      [RandomIntFromInterval(0, 1000) + v]: RandomString()
     }
     return item;
   })
-}
-
-function randomIntFromInterval(min: number, max: number) { // min and max included 
-  return Math.floor(Math.random() * (max - min + 1) + min)
-}
-
-function RandomString() {
-  return (Math.random() + 1).toString(36).substring(7);
 }
