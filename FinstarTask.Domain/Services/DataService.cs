@@ -40,7 +40,10 @@ public class DataService : IDataService
         try
         {
             await _finstarRepo.TruncateAsync();
-            await _finstarRepo.BulkInsertAsync(newItems.Select((i,index) => new FinstarRowDbEntity {RowNum = index, Code = i.Code, Value = i.Value }));
+            await _finstarRepo.BulkInsertAsync(
+                newItems.Select((i,index) => new FinstarRowDbEntity {RowNum = index, Code = i.Code, Value = i.Value })
+                .OrderBy(i => i.Code).ThenBy(i => i.Value)
+            );
             await transaction.CommitAsync();
         }
         catch (Exception ex)
