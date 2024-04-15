@@ -8,14 +8,14 @@ import PromptNumberModal from "./PromptNumberModal";
 
 interface Props {
   pageSize: number;
-  setPage: (page: PagedResult<FinstarRow>) => void;
+  onDataInserted: (page: PagedResult<FinstarRow>) => void;
 }
 
 const MAX_TEXT_LENGTH = 10000;
 interface FormData {
   text: string;
 }
-export default function InsertDataPart({ pageSize, setPage} : Props) {
+export default function InsertDataPart({ pageSize, onDataInserted } : Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm<FormData>();
   const [isPromptNumberModalVisible, setPromptNumberModalVisible] = useState(false);
@@ -27,10 +27,10 @@ export default function InsertDataPart({ pageSize, setPage} : Props) {
       if (items) {
         const resp = await FinstarDataServie.TruncateAndInsert(items, pageSize);
         if (resp) {
-          setPage(resp);
+          onDataInserted(resp);
         }
       }
-    }finally {
+    } finally {
       setIsLoading(false);
     }
   }

@@ -1,16 +1,38 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FinstarDataServie } from './services/FinstarDataService';
-import { Layout, Table, Tabs } from 'antd';
+import { Layout, Table, Tabs, notification } from 'antd';
 import { EmptyPagedResult, PagedResult } from './types/PagedResult';
 import { FinstarRow } from './types/FinstarDataTypes';
 import InsertDataPart from './components/InsertDataPart';
 import { Content } from 'antd/es/layout/layout';
 
 const DEFAULT_PAGE_SIZE = 10;
-function App() {
 
+function App() {
+  const [notificationApi, notificationContextHolder] = notification.useNotification();
   const [page, setPage] = useState<PagedResult<FinstarRow>>(EmptyPagedResult<FinstarRow>(DEFAULT_PAGE_SIZE));
   const [isLoading, setIsLoading] = useState(false);
+  const [currentTab, setCurrentTab] = useState('getData');
+
+  const openNotificationWithIcon = useCallback((
+    type: 'success' | 'info' | 'warning' | 'error',
+    message: string,
+    description?: string | undefined,
+    duration: number = 3
+  ) => {
+    notificationApi[type]({
+      message,
+      description,
+      duration,
+    });
+  }, [notificationApi]);
+
+  const onDataInserted = useCallback((page: PagedResult<FinstarRow>) => {
+    setPage(page);
+    openNotificationWithIcon('success', 'Вставка данных', `Вставлено строк: ${page.totalCount}`);
+    setCurrentTab('getData');
+  }, [openNotificationWithIcon]);
+
   const load = async (page: number, pageSize: number) => {
     setIsLoading(true);
     const resp = await FinstarDataServie.Get(page, pageSize);
@@ -33,6 +55,7 @@ function App() {
           dataSource={page.items}
           loading={isLoading}
           size='small'
+          rowKey={'rowNum'}
           pagination={{
             showSizeChanger: true,
             pageSize: page.pageSize,
@@ -68,20 +91,23 @@ function App() {
     {
       label: 'Вставить',
       key: 'insertData',
-      children: <InsertDataPart pageSize={page.pageSize} setPage={setPage}/>,
+      children: <InsertDataPart pageSize={page.pageSize} onDataInserted={onDataInserted}/>,
       disabled: isLoading,
     }
-  ], [isLoading, page.items, page.page, page.pageSize, page.totalCount])
+  ], [isLoading, onDataInserted, page.items, page.page, page.pageSize, page.totalCount]);
 
   return (
     <Layout style={{width: 'calc(100% - 100px)', margin: 'auto', marginTop: 40, padding: 10}}>
       <Content style={{width: '100%'}}>
-        <Tabs  style={{width: '100%'}}
+        <Tabs style={{width: '100%'}}
           defaultActiveKey="1"
           type="card"
+          onChange={setCurrentTab}
+          activeKey={currentTab}
           items={tabs}
         />
       </Content>
+      {notificationContextHolder}
     </Layout>
   );
 }
