@@ -1,4 +1,4 @@
-import { Button, Flex, Form, Space } from "antd"
+import { Button, Flex, Form, Popconfirm, Space } from "antd"
 import { FinstarRow, FinstarRowSource, NewFinstarRow } from "../types/FinstarDataTypes"
 import { PagedResult } from "../types/PagedResult"
 import TextArea from "antd/es/input/TextArea";
@@ -69,7 +69,16 @@ export default function InsertDataPart({ pageSize, onDataInserted } : Props) {
       <Flex justify="flex-end">
         <Space>
           <Button onClick={() => setPromptNumberModalVisible(true)}>Сгенерировать строки</Button>
-          <Button type="primary" onClick={() => form.submit()}>Ok</Button>
+          <Popconfirm
+            title="Внимание!"
+            description="Вставка полностью удалить все имеющиеся данные. Продолжить?"
+            placement="topRight"
+            onConfirm={() => form.submit()}
+            okText="Да"
+            cancelText="Нет"
+          >
+            <Button type="primary">Вставить</Button>
+          </Popconfirm>
         </Space>
       </Flex>
     </Form>
