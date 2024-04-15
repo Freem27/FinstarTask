@@ -1,9 +1,5 @@
 @FinstarTask.Server_HostAddress = http://localhost:5286
 
-GET {{FinstarTask.Server_HostAddress}}/weatherforecast/
-Accept: application/json
-###
-
 GET {{FinstarTask.Server_HostAddress}}/api/Data/get/
 Accept: application/json
 ###
