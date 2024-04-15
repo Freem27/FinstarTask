@@ -63,7 +63,7 @@ export default function InsertDataPart({ pageSize, onDataInserted } : Props) {
       disabled={isLoading}
       initialValues={{text: '[{"1": "value1"},{"5": "value2"},{"10": "value32"}]'}}
     >
-      <Form.Item label='Введите данные' name={'text'} rules={[{validator: (_, v) => validateText(v)}]}>
+      <Form.Item label='Введите данные' name={'text'} tooltip={`Не более ${MAX_TEXT_LENGTH} символов`} rules={[{validator: (_, v) => validateText(v)}]}>
         <TextArea rows={20} maxLength={MAX_TEXT_LENGTH} placeholder='[{"1": "value1"},{"5": "value2"},{"10": "value32"}]'/>
       </Form.Item>
       <Flex justify="flex-end">
