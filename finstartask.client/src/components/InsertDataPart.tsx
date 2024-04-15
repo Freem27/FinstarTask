@@ -6,15 +6,17 @@ import { FinstarDataServie } from "../services/FinstarDataService";
 import { useState } from "react";
 import PromptNumberModal from "./PromptNumberModal";
 
+const MAX_TEXT_LENGTH = 10000;
+
 interface Props {
   pageSize: number;
   onDataInserted: (page: PagedResult<FinstarRow>) => void;
 }
 
-const MAX_TEXT_LENGTH = 10000;
 interface FormData {
   text: string;
 }
+
 export default function InsertDataPart({ pageSize, onDataInserted } : Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm<FormData>();
@@ -37,8 +39,7 @@ export default function InsertDataPart({ pageSize, onDataInserted } : Props) {
 
   const inserNewData = (count: number) => {
     const newData = RenderTestData(count);
-    console.log(newData)
-    form.setFieldValue('text', JSON.stringify(newData, null, 2).substring(0, MAX_TEXT_LENGTH))
+    form.setFieldValue('text', JSON.stringify(newData, null, 2).substring(0, MAX_TEXT_LENGTH));
   }
 
   const validateText = (text: string) => {
