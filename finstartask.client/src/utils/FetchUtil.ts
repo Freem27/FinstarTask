@@ -1,3 +1,5 @@
+import { notification } from "antd";
+
 export type HTTPMethod = "GET" | "POST" | "PUT" | "DELETE";
 
 export async function Fetch<T>(uri: string, method?: HTTPMethod, data?: object, alwaysQuery: boolean = false) {
@@ -27,10 +29,10 @@ export async function Fetch<T>(uri: string, method?: HTTPMethod, data?: object, 
 		if (result.success) {
 			return result.data as T;
 		} else {
-			throw result.message;
+			notification.error({message: uri, description: result.message, duration: 3})
 		}
-	} catch {
-    console.log('fetch error')
+	} catch (err) {
+		notification.error({message: uri, description: 'Ошибка выполнения запроса', duration: 3})
   }
 }
 

@@ -2,20 +2,19 @@ using FinstarTask.DAL;
 using FinstarTask.DAL.Entities;
 using FinstarTask.DAL.Repos;
 using FinstarTask.Domain.Services;
+using FinstarTask.Server;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 
 const string CONNECTIONS_STRING_VARIABLE_NAME = "MSSQL_CONNECTION_STRING";
 
 #if DEBUG
 Environment.SetEnvironmentVariable(CONNECTIONS_STRING_VARIABLE_NAME, "Server=(LocalDb)\\MSSQLLocalDB;Database=FinstarRD;Trusted_Connection=True;");
-//Environment.SetEnvironmentVariable(CONNECTIONS_STRING_VARIABLE_NAME, "Data Source=FREEMPC\\SQLEXPRESS;Initial Catalog=FinstarRD;User Id=user;Password=passw;MultiSubnetFailover=True");
 #endif
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => options.Filters.Add(new ApiExceptionFilter()));
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
     options.UseSqlServer(Environment.GetEnvironmentVariable(CONNECTIONS_STRING_VARIABLE_NAME) 
         ?? throw new ApplicationException($"{CONNECTIONS_STRING_VARIABLE_NAME} is empty")
