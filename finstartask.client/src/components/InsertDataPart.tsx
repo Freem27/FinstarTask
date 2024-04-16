@@ -7,7 +7,7 @@ import { useState } from "react";
 import PromptNumberModal from "./PromptNumberModal";
 import { RandomIntFromInterval, RandomString } from "../utils/RandomUtils";
 
-const MAX_TEXT_LENGTH = 10000;
+const MAX_TEXT_LENGTH = 30000;
 
 interface Props {
   pageSize: number;
