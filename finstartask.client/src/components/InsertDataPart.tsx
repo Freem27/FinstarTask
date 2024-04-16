@@ -75,7 +75,7 @@ export default function InsertDataPart({ pageSize, onDataInserted } : Props) {
           <Button onClick={() => setPromptNumberModalVisible(true)}>Сгенерировать строки</Button>
           <Popconfirm
             title="Внимание!"
-            description="Вставка полностью удалить все имеющиеся данные. Продолжить?"
+            description="Вставка полностью удалит все имеющиеся данные. Продолжить?"
             placement="topRight"
             onConfirm={() => form.submit()}
             okText="Да"
