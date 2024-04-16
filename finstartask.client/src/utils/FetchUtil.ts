@@ -26,12 +26,19 @@ export async function Fetch<T>(uri: string, method?: HTTPMethod, data?: object, 
 		}
 
 		const result = (await response.json()) as ApiResultModel;
-		if (result.success) {
+		if (result.success === true) {
 			return result.data as T;
+		} else if (result.success === false) {
+			notification.error({message: uri, description: result.message ?? 'Ошибка выполнения запроса', duration: 3})
 		} else {
-			notification.error({message: uri, description: result.message, duration: 3})
+			throw result;
 		}
 	} catch (err) {
+		if (err as BadModelError) {
+			const badModelError = err as BadModelError;
+			notification.error({message: uri, description: badModelError.title, duration: 3})	
+			return;
+		}
 		notification.error({message: uri, description: 'Ошибка выполнения запроса', duration: 3})
   }
 }
@@ -61,6 +68,11 @@ function encode(key: string, value: object): string {
 	} else {
 		return encodeKeyValue(key, value);
 	}
+}
+
+interface BadModelError {
+	title: string;
+	errors: unknown[];
 }
 
 interface ApiResultModel {
